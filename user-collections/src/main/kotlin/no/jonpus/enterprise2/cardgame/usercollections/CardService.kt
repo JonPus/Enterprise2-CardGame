@@ -1,6 +1,6 @@
 package no.jonpus.enterprise2.cardgame.usercollections
 
-import no.jonpus.enterprise2.cardgame.cards.dto.dto.Rarity
+import no.jonpus.enterprise2.cardgame.cards.dto.Rarity
 import no.jonpus.enterprise2.cardgame.usercollections.model.Card
 import no.jonpus.enterprise2.cardgame.usercollections.model.Collection
 import org.slf4j.LoggerFactory

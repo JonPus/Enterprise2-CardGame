@@ -1,19 +1,19 @@
 package no.jonpus.enterprise2.cardgame.usercollections.model
 
-import no.jonpus.enterprise2.cardgame.cards.dto.dto.CollectionDto
-import no.jonpus.enterprise2.cardgame.cards.dto.dto.Rarity
+import no.jonpus.enterprise2.cardgame.cards.dto.CollectionDto
+import no.jonpus.enterprise2.cardgame.cards.dto.Rarity
 import kotlin.math.abs
 
 
 data class Collection(
 
-    val cards : List<Card>,
+        val cards : List<Card>,
 
-    val prices: Map<Rarity, Int>,
+        val prices: Map<Rarity, Int>,
 
-    val millValues: Map<Rarity, Int>,
+        val millValues: Map<Rarity, Int>,
 
-    val rarityProbabilities: Map<Rarity, Double>
+        val rarityProbabilities: Map<Rarity, Double>
 ){
 
     constructor(dto: CollectionDto) : this(

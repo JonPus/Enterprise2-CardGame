@@ -19,11 +19,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @Primary
 @Service
 class FakeCardService : CardService(){
+
     override fun fetchData() {
         val dto = FakeData.getCollectionDto()
         super.collection = Collection(dto)
     }
 }
+
+
 
 @ActiveProfiles("UserServiceTest,test")
 @ExtendWith(SpringExtension::class)
@@ -66,7 +69,7 @@ internal class UserServiceTest{
         userService.buyCard(userId, cardId)
 
         val user = userService.findByIdEager(userId)!!
-        assertTrue(user.ownedCards.any { it.cardId == cardId })
+        assertTrue(user.ownedCards.any { it.cardId == cardId})
     }
 
     @Test

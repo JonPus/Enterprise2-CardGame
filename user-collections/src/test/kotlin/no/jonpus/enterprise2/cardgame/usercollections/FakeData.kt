@@ -1,8 +1,8 @@
 package no.jonpus.enterprise2.cardgame.usercollections
 
-import no.jonpus.enterprise2.cardgame.cards.dto.dto.CardDto
-import no.jonpus.enterprise2.cardgame.cards.dto.dto.CollectionDto
-import no.jonpus.enterprise2.cardgame.cards.dto.dto.Rarity.*
+import no.jonpus.enterprise2.cardgame.cards.dto.CardDto
+import no.jonpus.enterprise2.cardgame.cards.dto.CollectionDto
+import no.jonpus.enterprise2.cardgame.cards.dto.Rarity.*
 
 object FakeData {
 

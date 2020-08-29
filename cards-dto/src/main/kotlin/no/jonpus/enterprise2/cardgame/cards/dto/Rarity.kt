@@ -1,4 +1,4 @@
-package no.jonpus.enterprise2.cardgame.cards.dto.dto
+package no.jonpus.enterprise2.cardgame.cards.dto
 
 enum class Rarity {
 

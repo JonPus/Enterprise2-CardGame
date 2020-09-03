@@ -244,17 +244,6 @@
         <pluginManagement>
             <plugins>
 
-                <!-- Built-in plugin used to compile Java code -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <release>${version.java}</release>
-                    </configuration>
-                </plugin>
-
                 <!-- Built-in plugin used to execute unit tests -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

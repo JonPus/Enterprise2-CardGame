@@ -12,6 +12,9 @@
     <modules>
         <module>cards-dto</module>
         <module>user-collections</module>
+        <module>rest-dto</module>
+        <module>rest-exception</module>
+        <module>scores</module>
     </modules>
 
     <properties>
@@ -218,11 +221,19 @@
                 <artifactId>resteasy-jackson-provider</artifactId>
                 <version>${version.resteasy}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxb-provider</artifactId>
                 <version>${version.resteasy}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>28.1-jre</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
@@ -383,20 +394,6 @@
                             <phase>test-compile</phase>
                             <goals>
                                 <goal>testCompile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <!-- Need to create self-executable uber/fat jars -->
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${version.springboot}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>repackage</goal>
                             </goals>
                         </execution>
                     </executions>

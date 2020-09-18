@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="rest-exception" />
         <module name="cards-dto" />
+        <module name="cards" />
         <module name="user-collections" />
         <module name="scores" />
         <module name="rest-dto" />

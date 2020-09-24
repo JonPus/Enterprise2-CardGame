@@ -1,43 +1,44 @@
 package no.jonpus.enterprise2.cardgame.usercollections
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import no.jonpus.enterprise2.cardgame.rest.dto.WrappedResponse
 import no.jonpus.enterprise2.cardgame.usercollections.db.UserRepository
 import no.jonpus.enterprise2.cardgame.usercollections.db.UserService
 import no.jonpus.enterprise2.cardgame.usercollections.dto.Command
 import no.jonpus.enterprise2.cardgame.usercollections.dto.PatchUserDto
 import no.jonpus.enterprise2.cardgame.usercollections.model.Collection
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.ApplicationContextInitializer
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import javax.annotation.PostConstruct
 
 
-@Profile("RestApiTest")
-@Primary
-@Service
-class FakeCardService : CardService() {
-
-    override fun fetchData() {
-        val dto = FakeData.getCollectionDto()
-        super.collection = Collection(dto)
-    }
-
-}
-
-@ActiveProfiles("RestApiTest, test")
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = [(RestAPITest.Companion.Initializer::class)])
 internal class RestAPITest {
 
     @LocalServerPort
@@ -56,6 +57,41 @@ internal class RestAPITest {
         RestAssured.port = port
         RestAssured.basePath = "/api/user-collections"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
+    }
+
+    companion object {
+        private lateinit var wiremockServer: WireMockServer
+
+        @BeforeAll
+        @JvmStatic
+        fun initClass() {
+
+            wiremockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().notifier(ConsoleNotifier(true)))
+            wiremockServer.start()
+
+            val dto = WrappedResponse(code = 200, data = FakeData.getCollectionDto()).validated()
+            val json = ObjectMapper().writeValueAsString(dto)
+
+            wiremockServer.stubFor(
+                    WireMock.get(WireMock.urlMatching("/api/cards/collection_.*"))
+                            .willReturn(WireMock.aResponse()
+                                    .withStatus(200)
+                                    .withHeader("Content-Type", "application/json; charset=utf-8")
+                                    .withBody(json)))
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun tearDown() {
+            wiremockServer.stop()
+        }
+
+        class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+            override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
+                TestPropertyValues.of("cardServiceAddress: localhost:${wiremockServer.port()}")
+                        .applyTo(configurableApplicationContext.environment)
+            }
+        }
     }
 
 

@@ -16,6 +16,8 @@
         <module>rest-exception</module>
         <module>scores</module>
         <module>cards</module>
+        <module>api-gateway</module>
+        <module>e2e-tests</module>
     </modules>
 
     <properties>
@@ -180,6 +182,14 @@
                 <groupId>io.rest-assured</groupId>
                 <artifactId>xml-path</artifactId>
                 <version>${version.restassured}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <!-- To use Docker from tests -->
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${version.testcontainers}</version>
                 <scope>test</scope>
             </dependency>
 

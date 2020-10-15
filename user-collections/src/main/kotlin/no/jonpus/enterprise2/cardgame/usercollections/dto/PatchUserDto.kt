@@ -18,5 +18,4 @@ data class PatchUserDto(
 
         @get:ApiModelProperty("Optional card id, if a the command requires one")
         var cardId: String? = null
-
 )

@@ -7,7 +7,8 @@ import no.jonpus.enterprise2.cardgame.usercollections.dto.UserDto
 
 object DtoConverter {
 
-    fun transform(user: User) : UserDto {
+
+    fun transform(user: User) : UserDto{
 
         return UserDto().apply {
             userId = user.userId
@@ -18,7 +19,7 @@ object DtoConverter {
         }
     }
 
-    fun transform( cardCopy: CardCopy) : CardCopyDto{
+    fun transform(cardCopy: CardCopy) : CardCopyDto{
         return CardCopyDto().apply {
             cardId = cardCopy.cardId
             numberOfCopies = cardCopy.numberOfCopies

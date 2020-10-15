@@ -4,7 +4,6 @@ import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.BeforeAll
@@ -21,6 +20,7 @@ import java.util.concurrent.TimeUnit
 @Disabled
 @Testcontainers
 class RestIT {
+
 
     companion object {
 
@@ -42,6 +42,7 @@ class RestIT {
                 .withLogConsumer("scores") { print("[SCORES] " + it.utf8String) }
                 .withLocalCompose(true)
 
+
         @BeforeAll
         @JvmStatic
         fun waitForServers() {
@@ -60,7 +61,6 @@ class RestIT {
 
                         true
                     }
-
         }
     }
 
@@ -79,6 +79,21 @@ class RestIT {
     }
 
     @Test
+    fun testGetScores() {
+        Awaitility.await().atMost(120, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofSeconds(10))
+                .ignoreExceptions()
+                .until {
+                    given().accept(ContentType.JSON)
+                            .get("/api/scores")
+                            .then()
+                            .statusCode(200)
+                            .body("data.list.size()", greaterThan(0))
+                    true
+                }
+    }
+
+    @Test
     fun testCreateUser() {
         Awaitility.await().atMost(120, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofSeconds(10))
@@ -89,38 +104,18 @@ class RestIT {
 
                     given().get("/api/user-collections/$id")
                             .then()
-                            .statusCode(401)
+                            .statusCode(404)
 
 
-                    val password = "123456"
-
-                    val cookie = given().contentType(ContentType.JSON)
-                            .body("""
-                                {
-                                    "userId": "$id",
-                                    "password": "$password"
-                                }
-                            """.trimIndent())
-                            .post("/api/auth/signUp")
-                            .then()
-                            .statusCode(201)
-                            .header("Set-Cookie", CoreMatchers.not(equalTo(null)))
-                            .extract().cookie("SESSION")
-
-
-                    given().cookie("SESSION", cookie)
-                            .put("/api/user-collections/$id")
+                    given().put("/api/user-collections/$id")
                             .then()
                             .statusCode(201)
 
-                    given().cookie("SESSION", cookie)
-                            .get("/api/user-collections/$id")
+                    given().get("/api/user-collections/$id")
                             .then()
                             .statusCode(200)
 
                     true
                 }
     }
-
-
 }

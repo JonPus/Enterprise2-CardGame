@@ -60,14 +60,15 @@ internal class RestAPITest {
     }
 
     companion object {
+
         private lateinit var wiremockServer: WireMockServer
 
         @BeforeAll
         @JvmStatic
         fun initClass() {
-
             wiremockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().notifier(ConsoleNotifier(true)))
             wiremockServer.start()
+
 
             val dto = WrappedResponse(code = 200, data = FakeData.getCollectionDto()).validated()
             val json = ObjectMapper().writeValueAsString(dto)

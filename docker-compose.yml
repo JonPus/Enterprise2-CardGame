@@ -18,9 +18,13 @@ services:
 
   postgres-user-collections:
     image: "postgres:10"
+    environment:
+      POSTGRES_PASSWORD: "root"
 
   postgres-scores:
     image: "postgres:10"
+    environment:
+      POSTGRES_PASSWORD: "root"
 
   cards_0:
     build:

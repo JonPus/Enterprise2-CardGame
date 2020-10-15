@@ -6,7 +6,6 @@ spring:
     database: h2
     show-sql: true
   cloud:
-    consul:
-      enabled: false
-
+      consul:
+        enabled: false
 

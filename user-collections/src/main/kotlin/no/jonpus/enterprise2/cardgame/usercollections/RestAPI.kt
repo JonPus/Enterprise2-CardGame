@@ -29,10 +29,10 @@ class RestAPI(
     @GetMapping(path = ["/{userId}"])
     fun getUserInfo(
             @PathVariable("userId") userId: String
-    ): ResponseEntity<WrappedResponse<UserDto>> {
+    ) : ResponseEntity<WrappedResponse<UserDto>>{
 
         val user = userService.findByIdEager(userId)
-        if (user == null) {
+        if(user == null){
             return RestResponseFactory.notFound("User $userId not found")
         }
 
@@ -43,9 +43,9 @@ class RestAPI(
     @PutMapping(path = ["/{userId}"])
     fun createUser(
             @PathVariable("userId") userId: String
-    ): ResponseEntity<WrappedResponse<Void>> {
+    ): ResponseEntity<WrappedResponse<Void>>{
         val ok = userService.registerNewUser(userId)
-        return if (!ok) RestResponseFactory.userFailure("User $userId already exist")
+        return if(!ok)  RestResponseFactory.userFailure("User $userId already exist")
         else RestResponseFactory.noPayload(201)
     }
 
@@ -57,45 +57,42 @@ class RestAPI(
     fun patchUser(
             @PathVariable("userId") userId: String,
             @RequestBody dto: PatchUserDto
-    ): ResponseEntity<WrappedResponse<PatchResultDto>> {
+    ): ResponseEntity<WrappedResponse<PatchResultDto>>{
 
-        if (dto.command == null) {
+        if(dto.command == null){
             return RestResponseFactory.userFailure("Missing command")
         }
 
-        if (dto.command == Command.OPEN_PACK) {
+        if(dto.command == Command.OPEN_PACK){
             val ids = try {
                 userService.openPack(userId)
-            } catch (e: IllegalArgumentException) {
+            } catch (e: IllegalArgumentException){
                 return RestResponseFactory.userFailure(e.message ?: "Failed to open pack")
             }
-            return RestResponseFactory.payload(200, PatchResultDto().apply { cardIdsInOpenedPacket.addAll(ids) })
+            return RestResponseFactory.payload(200, PatchResultDto().apply { cardIdsInOpenedPack.addAll(ids) })
         }
 
         val cardId = dto.cardId
                 ?: return RestResponseFactory.userFailure("Missing card id")
 
-        if (dto.command == Command.BUY_CARD) {
-            try {
+        if(dto.command == Command.BUY_CARD){
+            try{
                 userService.buyCard(userId, cardId)
-            } catch (e: IllegalArgumentException) {
+            } catch (e: IllegalArgumentException){
                 return RestResponseFactory.userFailure(e.message ?: "Failed to buy card $cardId")
             }
             return RestResponseFactory.payload(200, PatchResultDto())
         }
 
-        if (dto.command == Command.MILL_CARD) {
-            try {
+        if(dto.command == Command.MILL_CARD){
+            try{
                 userService.millCard(userId, cardId)
-            } catch (e: IllegalArgumentException) {
-
+            } catch (e: IllegalArgumentException){
                 return RestResponseFactory.userFailure(e.message ?: "Failed to mill card $cardId")
             }
-
             return RestResponseFactory.payload(200, PatchResultDto())
-
         }
+
         return RestResponseFactory.userFailure("Unrecognized command: ${dto.command}")
     }
-
 }

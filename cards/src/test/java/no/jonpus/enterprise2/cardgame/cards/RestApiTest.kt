@@ -1,8 +1,10 @@
 package no.jonpus.enterprise2.cardgame.cards
 
 import io.restassured.RestAssured
+import io.restassured.RestAssured.given
 import no.jonpus.enterprise2.cardgame.cards.RestApi.Companion.LATEST
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -16,13 +18,13 @@ import javax.annotation.PostConstruct
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [(Application::class)],
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class RestApiTest {
+internal class RestApiTest{
 
     @LocalServerPort
     protected var port = 0
 
     @PostConstruct
-    fun init() {
+    fun init(){
         RestAssured.baseURI = "http://localhost"
         RestAssured.port = port
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
@@ -30,32 +32,31 @@ internal class RestApiTest {
 
 
     @Test
-    fun testGetImg() {
+    fun testGetImg(){
 
-        RestAssured.given().get("/api/cards/imgs/001-monster.svg")
+        given().get("/api/cards/imgs/001-monster.svg")
                 .then()
                 .statusCode(200)
                 .contentType("image/svg+xml")
-                .header("cache-control", Matchers.`is`(Matchers.notNullValue()))
+                .header("cache-control", `is`(notNullValue()))
     }
 
     @Test
-    fun testGetCollection() {
+    fun testGetCollection(){
 
-        RestAssured.given().get("/api/cards/collection_$LATEST")
+        given().get("/api/cards/collection_$LATEST")
                 .then()
                 .statusCode(200)
-                .body("data.cards.size", Matchers.greaterThan(10))
+                .body("data.cards.size", greaterThan(10))
     }
 
 
     @Test
-    fun testGetCollectionOldVersion() {
+    fun testGetCollectionOldVersion(){
 
-        RestAssured.given().get("/api/cards/collection_v0_002")
+        given().get("/api/cards/collection_v0_002")
                 .then()
                 .statusCode(200)
-                .body("data.cards.size", Matchers.greaterThan(10))
+                .body("data.cards.size", greaterThan(10))
     }
-
 }

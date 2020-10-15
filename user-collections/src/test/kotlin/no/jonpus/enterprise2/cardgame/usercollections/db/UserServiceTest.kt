@@ -3,6 +3,7 @@ package no.jonpus.enterprise2.cardgame.usercollections.db
 import no.jonpus.enterprise2.cardgame.usercollections.CardService
 import no.jonpus.enterprise2.cardgame.usercollections.FakeData
 import no.jonpus.enterprise2.cardgame.usercollections.model.Collection
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,15 +19,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @Profile("UserServiceTest")
 @Primary
 @Service
-class FakeCardService : CardService(){
+class FakeCardService : CardService(Resilience4JCircuitBreakerFactory()){
 
     override fun fetchData() {
         val dto = FakeData.getCollectionDto()
         super.collection = Collection(dto)
     }
 }
-
-
 
 @ActiveProfiles("UserServiceTest,test")
 @ExtendWith(SpringExtension::class)

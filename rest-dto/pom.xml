@@ -6,15 +6,11 @@
     <artifactId>rest-dto</artifactId>
     <packaging>jar</packaging>
 
-
     <parent>
         <artifactId>Enterprise2-CardGame</artifactId>
         <groupId>no.jonpus</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-
-
 
     <dependencies>
         <dependency>
@@ -26,6 +22,5 @@
             <artifactId>springfox-boot-starter</artifactId>
         </dependency>
     </dependencies>
-
 
 </project>

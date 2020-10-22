@@ -4,7 +4,7 @@ spring:
   datasource:
     url: "jdbc:postgresql://postgres-user-collections:5432/postgres"
     username: "postgres"
-    password: ""
+    password: "postgres"
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql

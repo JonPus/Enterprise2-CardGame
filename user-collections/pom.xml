@@ -13,9 +13,7 @@
     <artifactId>user-collections</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <jarName>user-collections</jarName>
-    </properties>
+
 
     <dependencies>
 
@@ -130,9 +128,15 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <finalName>${jarName}</finalName>
+                    <finalName>user-collections</finalName>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
         </plugins>
     </build>
 

@@ -17,36 +17,30 @@ import java.util.concurrent.TimeUnit
 
 
 @Api(value = "/api/scores", description = "Scores and ranks of the players, based on their victories and defeats")
-@RequestMapping(
-        path = ["/api/scores"],
-        produces = [(MediaType.APPLICATION_JSON_VALUE)]
-)
+@RequestMapping(path = ["/api/scores"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
 @RestController
-class RestApi(
-        private val statsRepository: UserStatsRepository,
-        private val statsService: UserStatsService
-) {
+class RestApi(private val statsRepository: UserStatsRepository, private val statsService: UserStatsService) {
 
 
     @ApiOperation("Retrieve the current score statistics for the given player")
     @GetMapping(path = ["/{userId}"])
-    fun getUserStatsInfo(
-            @PathVariable("userId") userId: String
-    ): ResponseEntity<WrappedResponse<UserStatsDto>> {
+    fun getUserStatsInfo(@PathVariable("userId") userId: String): ResponseEntity<WrappedResponse<UserStatsDto>>{
 
         val user = statsRepository.findById(userId).orElse(null)
-        if (user == null) {
+        if (user == null){
             return RestResponseFactory.notFound("User $userId not found")
         }
 
+
         return RestResponseFactory.payload(200, DtoConverter.transform(user))
+
     }
+
 
     @ApiOperation("Create default info for a new player")
     @PutMapping(path = ["/{userId}"])
-    fun createUser(
-            @PathVariable("userId") userId: String
-    ): ResponseEntity<WrappedResponse<Void>> {
+    fun createUser(@PathVariable("userId") userId: String): ResponseEntity<WrappedResponse<Void>> {
+
         val ok = statsService.registerNewUser(userId)
         return if (!ok) RestResponseFactory.userFailure("User $userId already exist")
         else RestResponseFactory.noPayload(201)
@@ -70,14 +64,17 @@ class RestApi(
         val scores = DtoConverter.transform(statsService.getNextPage(n, keysetId, keysetScore))
         page.list = scores
 
-        if (scores.size == n) {
+        if (scores.size == n){
             val last = scores.last()
             page.next = "/api/scores?keysetId=${last.userId}&keysetScore=${last.score}"
         }
+
 
         return ResponseEntity
                 .status(200)
                 .cacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES).cachePublic())
                 .body(WrappedResponse(200, page).validated())
+
+
     }
 }

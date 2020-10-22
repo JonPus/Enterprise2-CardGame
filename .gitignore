@@ -1,4 +1,14 @@
 # Project exclude paths
-/.idea
-/cards-dto/target/
-/user-collections/target/
+.idea
+api-gateway/target/
+cards-dto/target/
+cards/target/
+e2e-tests/target/
+rest-dto/src/main/resources/
+rest-dto/src/test/
+rest-dto/target/
+rest-exception/src/main/resources/
+rest-exception/src/test/
+rest-exception/target/
+scores/target/
+user-collections/target/

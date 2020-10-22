@@ -16,12 +16,20 @@ services:
     environment:
       - CONSUL_LOCAL_CONFIG={"log_level":"info"}
 
-  postgres-user-collections:
+  redis:
+    image: "redis:latest"
+
+  postgres-auth:
     image: "postgres:10"
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
 
+  postgres-user-collections:
+    image: "postgres:10"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
 
   postgres-scores:
     image: "postgres:10"
@@ -29,6 +37,14 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
 
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - redis
+      - postgres-auth
 
   cards_0:
     build:

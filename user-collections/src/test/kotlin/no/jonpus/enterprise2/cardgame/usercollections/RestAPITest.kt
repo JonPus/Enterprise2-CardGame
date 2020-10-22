@@ -51,14 +51,6 @@ internal class RestAPITest {
     private lateinit var userRepository: UserRepository
 
 
-    @PostConstruct
-    fun init() {
-        RestAssured.baseURI = "http://localhost"
-        RestAssured.port = port
-        RestAssured.basePath = "/api/user-collections"
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
-    }
-
     companion object {
 
         private lateinit var wiremockServer: WireMockServer
@@ -95,10 +87,33 @@ internal class RestAPITest {
         }
     }
 
+    @PostConstruct
+    fun init() {
+        RestAssured.baseURI = "http://localhost"
+        RestAssured.port = port
+        RestAssured.basePath = "/api/user-collections"
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
+    }
+
 
     @BeforeEach
     fun initTest() {
         userRepository.deleteAll()
+    }
+
+    @Test
+    fun testAccessControl() {
+
+        val id = "foo"
+
+        given().get("/$id").then().statusCode(401)
+        given().put("/$id").then().statusCode(401)
+        given().patch("/$id").then().statusCode(401)
+
+        given().auth().basic("bar", "123")
+                .get("/$id")
+                .then()
+                .statusCode(403)
     }
 
     @Test
@@ -107,7 +122,8 @@ internal class RestAPITest {
         val id = "foo"
         userService.registerNewUser(id)
 
-        given().get("/$id")
+        given().auth().basic(id, "123")
+                .get("/$id")
                 .then()
                 .statusCode(200)
     }
@@ -116,7 +132,8 @@ internal class RestAPITest {
     fun testCreateUser() {
         val id = "foo"
 
-        given().put("/$id")
+        given().auth().basic(id, "123")
+                .put("/$id")
                 .then()
                 .statusCode(201)
 
@@ -129,9 +146,10 @@ internal class RestAPITest {
         val userId = "foo"
         val cardId = "c00"
 
-        given().put("/$userId").then().statusCode(201)
+        given().auth().basic(userId, "123").put("/$userId").then().statusCode(201)
 
-        given().contentType(ContentType.JSON)
+        given().auth().basic(userId, "123")
+                .contentType(ContentType.JSON)
                 .body(PatchUserDto(Command.BUY_CARD, cardId))
                 .patch("/$userId")
                 .then()
@@ -152,7 +170,8 @@ internal class RestAPITest {
         val totPacks = before.cardPacks
         assertTrue(totPacks > 0)
 
-        given().contentType(ContentType.JSON)
+        given().auth().basic(userId, "123")
+                .contentType(ContentType.JSON)
                 .body(PatchUserDto(Command.OPEN_PACK))
                 .patch("/$userId")
                 .then()
@@ -169,12 +188,13 @@ internal class RestAPITest {
     fun testMillCard() {
 
         val userId = "foo"
-        given().put("/$userId").then().statusCode(201)
+        given().auth().basic(userId, "123").put("/$userId").then().statusCode(201)
 
         val before = userRepository.findById(userId).get()
         val coins = before.coins
 
-        given().contentType(ContentType.JSON)
+        given().auth().basic(userId, "123")
+                .contentType(ContentType.JSON)
                 .body(PatchUserDto(Command.OPEN_PACK))
                 .patch("/$userId")
                 .then()
@@ -184,7 +204,8 @@ internal class RestAPITest {
         val n = between.ownedCards.sumBy { it.numberOfCopies }
 
         val cardId = between.ownedCards[0].cardId!!
-        given().contentType(ContentType.JSON)
+        given().auth().basic(userId, "123")
+                .contentType(ContentType.JSON)
                 .body(PatchUserDto(Command.MILL_CARD, cardId))
                 .patch("/$userId")
                 .then()

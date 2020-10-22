@@ -9,6 +9,7 @@
         <module name="e2e-tests" />
         <module name="cards" />
         <module name="scores" />
+        <module name="auth" />
         <module name="rest-dto" />
         <module name="api-gateway" />
         <module name="rest-exception" />

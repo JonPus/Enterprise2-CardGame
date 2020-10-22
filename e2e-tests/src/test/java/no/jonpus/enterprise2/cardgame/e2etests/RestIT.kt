@@ -4,6 +4,7 @@ import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.BeforeAll
@@ -104,18 +105,64 @@ class RestIT {
 
                     given().get("/api/user-collections/$id")
                             .then()
-                            .statusCode(404)
+                            .statusCode(401)
+
+                    val password = "123456"
+
+                    val cookie = given().contentType(ContentType.JSON)
+                            .body("""
+                                {
+                                    "userId": "$id",
+                                    "password": "$password"
+                                }
+                            """.trimIndent())
+                            .post("/api/auth/signUp")
+                            .then()
+                            .statusCode(201)
+                            .header("Set-Cookie", CoreMatchers.not(equalTo(null)))
+                            .extract().cookie("SESSION")
 
 
-                    given().put("/api/user-collections/$id")
+                    given().cookie("SESSION", cookie)
+                            .put("/api/user-collections/$id")
                             .then()
                             .statusCode(201)
 
-                    given().get("/api/user-collections/$id")
+                    given().cookie("SESSION", cookie)
+                            .get("/api/user-collections/$id")
                             .then()
                             .statusCode(200)
 
                     true
                 }
+    }
+
+    @Test
+    fun testUserCollectionAccessControl() {
+
+        val alice = "alice_testUserCollectionAccessControl_" + System.currentTimeMillis()
+        val eve =   "eve_testUserCollectionAccessControl_" + System.currentTimeMillis()
+
+        given().get("/api/user-collections/$alice").then().statusCode(401)
+        given().put("/api/user-collections/$alice").then().statusCode(401)
+        given().patch("/api/user-collections/$alice").then().statusCode(401)
+
+        val cookie = given().contentType(ContentType.JSON)
+                .body("""
+                                {
+                                    "userId": "$eve",
+                                    "password": "123456"
+                                }
+                            """.trimIndent())
+                .post("/api/auth/signUp")
+                .then()
+                .statusCode(201)
+                .header("Set-Cookie", CoreMatchers.not(equalTo(null)))
+                .extract().cookie("SESSION")
+
+        given().cookie("SESSION", cookie)
+                .get("/api/user-collections/$alice")
+                .then()
+                .statusCode(403)
     }
 }

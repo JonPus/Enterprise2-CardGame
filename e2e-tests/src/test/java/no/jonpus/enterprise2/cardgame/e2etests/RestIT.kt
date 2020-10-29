@@ -4,9 +4,8 @@ import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -121,14 +120,11 @@ class RestIT {
                             .post("/api/auth/signUp")
                             .then()
                             .statusCode(201)
-                            .header("Set-Cookie", CoreMatchers.not(equalTo(null)))
+                            .header("Set-Cookie", not(equalTo(null)))
                             .extract().cookie("SESSION")
 
                     given().cookie("SESSION", cookie)
                             .put("/api/user-collections/$id")
-//                            .then()
-                            //could be 400 if AMQP already registered it
-//                            .statusCode(201)
 
                     given().cookie("SESSION", cookie)
                             .get("/api/user-collections/$id")
@@ -173,7 +169,7 @@ class RestIT {
                             .post("/api/auth/signUp")
                             .then()
                             .statusCode(201)
-                            .header("Set-Cookie", CoreMatchers.not(equalTo(null)))
+                            .header("Set-Cookie", not(equalTo(null)))
                             .extract().cookie("SESSION")
 
                     given().cookie("SESSION", cookie)
@@ -223,7 +219,7 @@ class RestIT {
                 .post("/api/auth/signUp")
                 .then()
                 .statusCode(201)
-                .header("Set-Cookie", CoreMatchers.not(equalTo(null)))
+                .header("Set-Cookie", not(equalTo(null)))
                 .extract().cookie("SESSION")
 
 

@@ -154,7 +154,6 @@
                     <finalName>user-collections</finalName>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

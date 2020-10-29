@@ -12,8 +12,8 @@
     <artifactId>rest-exception</artifactId>
     <packaging>jar</packaging>
 
-
     <dependencies>
+
     <dependency>
         <groupId>no.jonpus</groupId>
         <artifactId>rest-dto</artifactId>
@@ -24,11 +24,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
     </dependency>
 </dependencies>
-
 
 </project>

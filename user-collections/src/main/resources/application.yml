@@ -7,10 +7,12 @@ spring:
     password: "postgres"
     driver-class-name: org.postgresql.Driver
   redis:
-      host: redis
-      port: 6379
+    host: redis
+    port: 6379
   session:
-        store-type: redis
+    store-type: redis
+  rabbitmq:
+    host: rabbitmq
   jpa:
     database: postgresql
     hibernate:

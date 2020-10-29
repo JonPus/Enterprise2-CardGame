@@ -1,6 +1,8 @@
 package no.jonpus.enterprise2.cardgame.auth
 
 import no.jonpus.enterprise2.cardgame.auth.db.UserService
+import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -19,8 +21,11 @@ import java.security.Principal
 class RestApi(
         private val service: UserService,
         private val authenticationManager: AuthenticationManager,
-        private val userDetailsService: UserDetailsService
+        private val userDetailsService: UserDetailsService,
+        private val rabbit: RabbitTemplate,
+        private val fanout: FanoutExchange
 ) {
+
     @RequestMapping("/user")
     fun user(user: Principal): ResponseEntity<Map<String, Any>> {
         val map = mutableMapOf<String, Any>()
@@ -31,7 +36,8 @@ class RestApi(
 
     @PostMapping(path = ["/signUp"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-    fun signUp(@RequestBody dto: AuthDto): ResponseEntity<Void> {
+    fun signUp(@RequestBody dto: AuthDto)
+            : ResponseEntity<Void> {
 
         val userId: String = dto.userId!!
         val password: String = dto.password!!
@@ -50,12 +56,16 @@ class RestApi(
         if (token.isAuthenticated) {
             SecurityContextHolder.getContext().authentication = token
         }
+
+        rabbit.convertAndSend(fanout.name, "", userId)
+
         return ResponseEntity.status(201).build()
     }
 
     @PostMapping(path = ["/login"],
             consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)])
-    fun login(@RequestBody dto: AuthDto): ResponseEntity<Void> {
+    fun login(@RequestBody dto: AuthDto)
+            : ResponseEntity<Void> {
 
         val userId: String = dto.userId!!
         val password: String = dto.password!!
@@ -74,6 +84,8 @@ class RestApi(
             SecurityContextHolder.getContext().authentication = token
             return ResponseEntity.status(204).build()
         }
+
         return ResponseEntity.status(400).build()
     }
+
 }

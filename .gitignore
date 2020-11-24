@@ -1,5 +1,6 @@
 # Project exclude paths
 .idea
+frontend/node_modules
 api-gateway/target/
 cards-dto/target/
 cards/target/
@@ -12,3 +13,4 @@ rest-exception/src/test/
 rest-exception/target/
 scores/target/
 user-collections/target/
+/frontend/yarn.lock

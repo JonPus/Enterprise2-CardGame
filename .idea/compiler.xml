@@ -15,6 +15,7 @@
         <module name="rest-exception" />
         <module name="cards-dto" />
         <module name="user-collections" />
+        <module name="frontend" />
       </profile>
     </annotationProcessing>
   </component>

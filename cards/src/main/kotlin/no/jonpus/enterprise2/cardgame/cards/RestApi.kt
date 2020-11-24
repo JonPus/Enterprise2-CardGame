@@ -14,21 +14,24 @@ import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
-@Api(value = "/api/cards", description = "Operation on the existing cards in the game")
+@Api(value = "/api/cards", description = "Operation on the cards existing in the game")
 @RequestMapping(path = ["/api/cards"])
 @RestController
 class RestApi {
 
-    companion object {
+    companion object{
         const val LATEST = "v1_000"
     }
 
 
     @ApiOperation("Return info on all cards in the game")
-    @GetMapping(path = ["/collection_$LATEST"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(
+            path = ["/collection_$LATEST"],
+            produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     fun getLatest() : ResponseEntity<WrappedResponse<CollectionDto>>{
 
-        var collection = CardCollection.get()
+        val collection =  CardCollection.get()
 
         return ResponseEntity
                 .status(200)
@@ -37,8 +40,12 @@ class RestApi {
 
     }
 
-    @ApiOperation("Old-ersion endpoints. Will automatically redirect most recent version")
-    @GetMapping(path = ["/collection_v0_001", "/collection_v0_002", "/collection_v0_003"])
+    @ApiOperation("Old-version endpoints. Will automatically redirect to most recent version")
+    @GetMapping(path = [
+        "/collection_v0_001",
+        "/collection_v0_002",
+        "/collection_v0_003"
+    ])
     fun getOld() : ResponseEntity<Void>{
 
         return ResponseEntity.status(301)
@@ -46,12 +53,16 @@ class RestApi {
                 .build()
     }
 
-    @ApiOperation("Return the image for a specified card")
-    @GetMapping(path = ["/imgs/{imgId}"], produces = ["image/svg+xml"])
-    fun getImage(@PathVariable("imgId") imgId : String) : ResponseEntity<String>{
+    @ApiOperation("Return the image for the specified card")
+    @GetMapping(
+            path= ["/imgs/{imgId}"],
+            produces= ["image/svg+xml"]
+    )
+    fun getImage(@PathVariable("imgId") imgId: String) : ResponseEntity<String>{
 
-        val folder = when {
-            imgId.run { endsWith("-monster.svg") || endsWith("-cyclops.svg") || endsWith("-dragon.svg") || endsWith("-snake.svg")}
+        val folder = when{
+            imgId.run{ endsWith("-monster.svg") || endsWith("-cyclops.svg")
+                    || endsWith("-dragon.svg") || endsWith("-snake.svg")}
                     -> "/1236106-monsters"
             else -> return ResponseEntity.status(400).build()
         }
@@ -64,5 +75,4 @@ class RestApi {
                 .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic())
                 .body(svg)
     }
-
 }

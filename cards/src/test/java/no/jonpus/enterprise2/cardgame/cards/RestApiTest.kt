@@ -3,9 +3,7 @@ package no.jonpus.enterprise2.cardgame.cards
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import no.jonpus.enterprise2.cardgame.cards.RestApi.Companion.LATEST
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest

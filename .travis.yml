@@ -2,3 +2,27 @@ language: java
 
 jdk:
   - openjdk11
+
+before_install:
+  - nvm install 12
+
+install: mvn de.qaware.maven:go-offline-maven-plugin:1.2.5:resolve-dependencies
+
+jobs:
+  include:
+    - stage: Root
+
+      script: mvn clean install -N
+
+    - stage: Misc
+      script:
+        - cd misc
+        - mvn clean install --fae
+    - stage: Intro
+      script:
+        - cd intro
+        - mvn clean install --fae
+    - stage: Advanced
+      script:
+        - cd advanced
+        - mvn clean install --fae

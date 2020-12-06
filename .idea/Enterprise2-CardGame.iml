@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module version="4">
+<module type="JAVA_MODULE" version="4">
   <component name="AutoImportedSourceRoots">
     <option name="directories">
       <list>
-        <option value="C:\Users\Jonathan\Documents\Skole HK\Semester_5_H_2020\Enterpriseprogrammering2\Enterprise2-CardGame/src/main/kotlin" />
-        <option value="C:\Users\Jonathan\Documents\Skole HK\Semester_5_H_2020\Enterpriseprogrammering2\Enterprise2-CardGame/src/test/java" />
+        <option value="C:\Users\Jonathan\Documents\SkoleHKProgrammering\5_Semester_Fall_2020\EnterpriseProgrammering2\Enterprise2-CardGame/src/main/kotlin" />
+        <option value="C:\Users\Jonathan\Documents\SkoleHKProgrammering\5_Semester_Fall_2020\EnterpriseProgrammering2\Enterprise2-CardGame/src/test/java" />
       </list>
     </option>
   </component>
